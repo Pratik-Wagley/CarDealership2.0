@@ -1,6 +1,6 @@
 package pluralsight;
 
-public class SalesContract extends Contract{
+public class SalesContract extends Contract {
     private double salesTax;
     private double recordingFee;
     private double processingFee;
@@ -8,9 +8,9 @@ public class SalesContract extends Contract{
 
     public SalesContract(String date, String name, Vehicle vehicle, double salesTax, double recordingFee, double processingFee, boolean finance) {
         super(date, name, vehicle);
-        this.salesTax = 5;
+        this.salesTax = getVehicle().getPrice() * .05;
         this.recordingFee = 100;
-        if (getTotalPrice() <= 10000) {
+        if (getVehicle().getPrice() <= 10000) {
             this.processingFee = 295;
         } else {
             this.processingFee = 495;
@@ -52,21 +52,30 @@ public class SalesContract extends Contract{
 
     @Override
     public double getTotalPrice() {
-        return getVehicle().getPrice();
+        double total = 0;
+        if (isFinance()) {
+            if (getVehicle().getPrice() >= 10000) {
+                total = (getMonthlyPrice() * 48) + getSalesTax() + getRecordingFee() + getProcessingFee();
+            }
+            else {
+                total = (getMonthlyPrice() * 24) + getSalesTax() + getRecordingFee() + getProcessingFee();
+            }
+        }else {
+            total = getVehicle().getPrice() + getSalesTax() + getRecordingFee() + getProcessingFee();
+        }
+        return total;
     }
 
     @Override
     public double getMonthlyPrice() {
         double price = 0;
         if (isFinance()) {
-            if (getTotalPrice() >= 10000) {
+            if (getVehicle().getPrice() >= 10000) {
                 price = getTotalPrice() / .0425;
-            }
-            else {
+            } else {
                 price = getTotalPrice() / .0525;
             }
         }
         return price;
-
     }
 }
