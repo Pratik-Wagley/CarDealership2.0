@@ -8,9 +8,13 @@ public class SalesContract extends Contract{
 
     public SalesContract(String date, String name, Vehicle vehicle, double salesTax, double recordingFee, double processingFee, boolean finance) {
         super(date, name, vehicle);
-        this.salesTax = salesTax;
-        this.recordingFee = recordingFee;
-        this.processingFee = processingFee;
+        this.salesTax = 5;
+        this.recordingFee = 100;
+        if (getTotalPrice() <= 10000) {
+            this.processingFee = 295;
+        } else {
+            this.processingFee = 495;
+        }
         this.finance = finance;
     }
 
@@ -53,7 +57,16 @@ public class SalesContract extends Contract{
 
     @Override
     public double getMonthlyPrice() {
-
+        double price = 0;
+        if (isFinance()) {
+            if (getTotalPrice() >= 10000) {
+                price = getTotalPrice() / .0425;
+            }
+            else {
+                price = getTotalPrice() / .0525;
+            }
+        }
+        return price;
 
     }
 }
