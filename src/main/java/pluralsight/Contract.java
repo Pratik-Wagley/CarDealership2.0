@@ -3,14 +3,24 @@ package pluralsight;
 public abstract class Contract {
     private String date;
     private String name;
+    private String email;
     private Vehicle vehicle;
     private double TotalPrice;
     private double monthlyPayment;
 
-    public Contract(String date, String name, Vehicle vehicle) {
+    public Contract(String date, String name,String email, Vehicle vehicle) {
         this.date = date;
         this.name = name;
+        this.name = email;
         this.vehicle = vehicle;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDate() {
