@@ -6,7 +6,7 @@ public class SalesContract extends Contract {
     private double processingFee;
     private boolean finance;
 
-    public SalesContract(String date, String name, String email, Vehicle vehicle, double salesTax, double recordingFee, double processingFee, boolean finance) {
+    public SalesContract(String date, String name, String email, Vehicle vehicle, boolean finance) {
         super(date, name, email, vehicle);
         this.salesTax = getVehicle().getPrice() * .05;
         this.recordingFee = 100;
@@ -52,30 +52,28 @@ public class SalesContract extends Contract {
 
     @Override
     public double getTotalPrice() {
-        double total = 0;
-        if (isFinance()) {
-            if (getVehicle().getPrice() >= 10000) {
-                total = (getMonthlyPrice() * 48) + getSalesTax() + getRecordingFee() + getProcessingFee();
-            }
-            else {
-                total = (getMonthlyPrice() * 24) + getSalesTax() + getRecordingFee() + getProcessingFee();
-            }
-        }else {
-            total = getVehicle().getPrice() + getSalesTax() + getRecordingFee() + getProcessingFee();
-        }
-        return total;
+        return getVehicle().getPrice() + salesTax + recordingFee + processingFee;
     }
 
     @Override
     public double getMonthlyPrice() {
-        double price = 0;
-        if (isFinance()) {
+        int numberOfPayments = 0;
+        double interestRate = 0;
+        if (finance) {
             if (getVehicle().getPrice() >= 10000) {
-                price = getTotalPrice() / .0425;
+                numberOfPayments = 48;
+                interestRate = 4.25 / 1200;
             } else {
-                price = getTotalPrice() / .0525;
+                numberOfPayments = 24;
+                interestRate = 5.25 / 1200;
             }
+
+            double monthlyPayment = getTotalPrice() * (interestRate * Math.pow(1 + interestRate, numberOfPayments)) / (Math.pow(1 + interestRate, numberOfPayments) - 1);
+            monthlyPayment = Math.round(monthlyPayment * 100);
+            monthlyPayment /= 100;
+            return monthlyPayment;
+        } else {
+            return 0.0;
         }
-        return price;
     }
 }

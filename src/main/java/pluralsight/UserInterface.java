@@ -26,6 +26,7 @@ public class UserInterface {
             System.out.println("7. Get all vehicles");
             System.out.println("8. Add vehicle");
             System.out.println("9. Remove vehicle");
+            System.out.println("10. Sale/Lease");
             System.out.println("99. Quit");
 
             System.out.print("Enter your choice: ");
@@ -58,6 +59,9 @@ public class UserInterface {
                     break;
                 case "9":
                     processRemoveVehicleRequest();
+                    break;
+                case "10":
+                    processSaveContract();
                     break;
                 case "99":
                     quit = true;
@@ -193,5 +197,48 @@ public class UserInterface {
             System.out.println(vehicle.toString());
         }
     }
+    public void processSaveContract() {
+        ContractDataManager contractDataManager = new ContractDataManager();
+        System.out.println("Would you like to buy(B) or lease(L) a vehicle?");
+        String saleType = scanner.nextLine();
+        System.out.println("Enter the VIN:");
+        int vin = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Enter your name:");
+        String name = scanner.nextLine();
+        System.out.println("Enter the date:");
+        String date = scanner.nextLine();
+        System.out.println("Enter your email:");
+        String email = scanner.nextLine();
+
+        System.out.println("If you would like to finance enter Y, else enter N");
+        boolean finance = scanner.nextBoolean();
+        scanner.nextLine();
+
+        Vehicle vehicle = dealership.getVehicleByVin(vin);
+        if (vehicle == null) {
+            System.out.println("No Vehicles with this VIN found:");
+            return;
+        }
+        if (saleType.equals("B")) {
+            SalesContract contract = new SalesContract(date, name, email, vehicle, finance);
+            contractDataManager.saveContract(contract, dealership, vin);
+
+        }
+        else if (saleType.equals("L")) {
+            LeaseContract contract = new LeaseContract(date, name, email, vehicle);
+            contractDataManager.saveContract(contract, dealership, vin);
+        } else {
+            System.out.println("Invalid sale type");
+            return;
+        }
+        System.out.println("Contract saved successfully!");
+
+        DealershipFileManager manager = new DealershipFileManager();
+        manager.saveDealership(dealership);
+
+
+    }
+
 
 }
